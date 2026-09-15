@@ -38,15 +38,56 @@ namespace MinhaPrimeiraAPI.Controllers
         }
 
         [HttpPut]
-        public string AtualizaUsuario()
+        [Route("{id}")]
+        public string AtualizaUsuario([FromRoute] string id, [FromBody] Usuario usuarioAtualizar)
         {
-            return "Você chamou o método Atualizar Usuário!";
+            Usuario usuarioSelecionado = null;
+            
+            foreach(var usuario in usuarios)
+            {
+                if(usuario.Id == id)
+                {
+                    usuarioSelecionado = usuario;
+                    break;
+                }
+            }
+
+            if(usuarioSelecionado == null)
+            {
+                return $"Usuário com o id {id} não encontrado!";
+            }
+
+            usuarioSelecionado.Id = usuarioAtualizar.Id;
+            usuarioSelecionado.Nome = usuarioAtualizar.Nome;
+            usuarioSelecionado.Idade = usuarioAtualizar.Idade;
+
+            // abaixo, opção não muito boa para "atualizar" (remover e depois adicionar)
+            // usuarios.Remove(usuarioSelecionado);
+            // usuarios.Add(usuarioAtualizar);
+            return $"Usuário com o id {id} atualizado!";
         }
 
         [HttpDelete]
-        public string DeletaUsuario()
+        [Route("{id}")]
+        public string DeletaUsuario([FromRoute] string id)
         {
-            return "Você chamou o método Deletar Usuário!";
+            Usuario usuarioDeletar = null;
+            foreach(var usuario in usuarios)
+            {
+                if(usuario.Id == id)
+                {
+                    usuarioDeletar = usuario;
+                    break;
+                }
+            }
+            if(usuarioDeletar == null)
+            {
+                return $"Não foi encontrado um usuário com o id {id}!";
+            } else
+            {
+                usuarios.Remove(usuarioDeletar);
+                return $"Usuário com o id {id} deletado!";
+            }
         }
 
         [HttpPost]
